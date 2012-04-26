@@ -3,8 +3,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-import com.redcliffetechnology.common.util.Tokenized;
-import com.redcliffetechnology.common.util.Tokenizer;
+import com.redcliffetechnology.common.util.tokenizer.ThreadSafeComparableTokenizer;
+import com.redcliffetechnology.common.util.tokenizer.VolatileComparableTokenized;
 
 
 
@@ -20,7 +20,7 @@ public class TestTokenizer implements Runnable {
 
 	private static final Random random=new Random();
 
-	private static Tokenizer<String> tokenizer;
+	private static ThreadSafeComparableTokenizer<String> tokenizer;
 	private static ArrayList<String> strings;
 	private static int[][] randoms;
 
@@ -52,7 +52,7 @@ public class TestTokenizer implements Runnable {
 			for(int randIter=0;randIter<2;randIter++) {
 				if(randIter==1) rand=true;
 				else rand=false;
-				tokenizer=new Tokenizer<String>(String.CASE_INSENSITIVE_ORDER,true);
+				tokenizer=new ThreadSafeComparableTokenizer<String>(String.CASE_INSENSITIVE_ORDER,true);
 
 				TestTokenizer[] tests=new TestTokenizer[th];
 				Thread[] threads=new Thread[th];
@@ -81,7 +81,7 @@ public class TestTokenizer implements Runnable {
 			}
 			System.out.println("************** SORTING TESTS");
 			// Build random list of String and Tokenized<String>
-			Tokenized<?>[] tokenized=new Tokenized<?>[(int)ITERATIONS];
+			VolatileComparableTokenized<?>[] tokenized=new VolatileComparableTokenized<?>[(int)ITERATIONS];
 			String[] string=new String[(int)ITERATIONS];
 			for(int i=0;i<ITERATIONS;i++) {
 				string[i]=strings.get(randoms[0][i]);
@@ -125,7 +125,7 @@ public class TestTokenizer implements Runnable {
 			//String value=""+i;
 			//value=PREFIX.substring(value.length()-1)+value;
 			final String value=strings.get(rand?indexes[(int)i]:(int)i);
-			Tokenized<String> stub=tokenizer.getTokenized(value);
+			VolatileComparableTokenized<String> stub=tokenizer.getTokenized(value);
 			if(!stub.getObject().equals(value)) {
 				System.out.println(value+"!="+stub.getObject());
 			}
